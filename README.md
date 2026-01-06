@@ -10,7 +10,7 @@ A simple web application hosted on Hugging Face Spaces that utilizes a Small Lan
 
 ##  Live
 
-You can try the live application hosted on Hugging Face Spaces:  **[Access the Diabetes Space Here](https://huggingface.co/spaces/subratomandalme/diabetes)**
+You can try the live application hosted on Hugging Face Spaces:  **[Link](https://huggingface.co/spaces/subratomandalme/diabetes)**
 
 
 ---
