@@ -1,8 +1,8 @@
-#  Basic SLM For Diabetes
+#  DiabetesSLM
 
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/subratomandalme/diabetes)
 
-A simple web application hosted on Hugging Face Spaces that utilizes a Small Language Model (SLM) to answer basic questions related to diabetes based on a provided dataset.
+A simple web application hosted on Hugging Face Spaces that utilizes a Small Language Model (Google T5 large) to answer basic questions related to diabetes based on a provided dataset.
 
 **Disclaimer:** This application is for informational and demonstrational purposes only. It does **NOT** provide medical advice. Always consult with a qualified healthcare professional for any health concerns or before making any decisions related to your health or treatment.
 
@@ -10,9 +10,8 @@ A simple web application hosted on Hugging Face Spaces that utilizes a Small Lan
 
 ##  Live
 
-You can try the live application hosted on Hugging Face Spaces:
+You can try the live application hosted on Hugging Face Spaces:  **[Access the Diabetes Space Here](https://huggingface.co/spaces/subratomandalme/diabetes)**
 
-** [Access the Diabetes Space Here](https://huggingface.co/spaces/subratomandalme/diabetes)**
 
 ---
 
@@ -26,15 +25,16 @@ You can try the live application hosted on Hugging Face Spaces:
 ---
 
 ##  Screenshots
-![Screenshot 2025-04-22 132823](https://github.com/user-attachments/assets/767a5ba6-f995-476a-825c-c9b5358d46d5)
 
-![Screenshot 2025-04-22 132840](https://github.com/user-attachments/assets/142b976d-e852-4906-9cc6-5d88bf3429e8)
+<img width="1466" height="781" alt="Screenshot 2026-01-06 at 7 00 31 PM" src="https://github.com/user-attachments/assets/528c8a2e-92b3-4cbc-9341-52a2292d1e3f" />
 
-![Screenshot 2025-04-22 132901](https://github.com/user-attachments/assets/f6cbfe96-ccd1-4cac-8e8e-f74485a48962)
+---
 
-![Screenshot 2025-04-22 132911](https://github.com/user-attachments/assets/192518b4-4ab4-4bd2-b3d1-412ef05bf0de)
+<img width="1465" height="778" alt="Screenshot 2026-01-06 at 7 03 27 PM" src="https://github.com/user-attachments/assets/e83769ea-b9f4-4b7c-8037-b1bdf67907ae" />
 
+---
 
+<img width="1467" height="781" alt="Screenshot 2026-01-06 at 7 03 38 PM" src="https://github.com/user-attachments/assets/e49f96ce-7e9e-4599-984f-14688a91faf7" />
 
 ---
 
@@ -112,4 +112,4 @@ The core of this application is a Small Language Model (SLM).
 
 ##  Contact
 
-Created by subratomandal - https://github.com/subratomandalme
+Created by subratomandal - https://github.com/subratomandal
