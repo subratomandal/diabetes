@@ -1,0 +1,7 @@
+# v 2.0
+flask
+torch
+transformers
+datasets 
+sentencepiece 
+accelerate

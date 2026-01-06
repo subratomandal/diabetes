@@ -1,0 +1,1850 @@
+<!-- v 2.0 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabetesGPT - Your Diabetes Assistant</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #09090b;
+            --bg-secondary: #0c0c0e;
+            --bg-card: #111113;
+            --bg-elevated: #18181b;
+            --border: #27272a;
+            --border-hover: #3f3f46;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent: #8b5cf6;
+            --accent-hover: #a78bfa;
+            --accent-muted: rgba(139, 92, 246, 0.15);
+            --success: #22c55e;
+            --error: #ef4444;
+            --ring: rgba(139, 92, 246, 0.4);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-card: #ffffff;
+            --bg-elevated: #f4f4f5;
+            --border: #e4e4e7;
+            --border-hover: #d4d4d8;
+            --text-primary: #09090b;
+            --text-secondary: #52525b;
+            --text-muted: #a1a1aa;
+            --accent: #7c3aed;
+            --accent-hover: #6d28d9;
+            --accent-muted: rgba(124, 58, 237, 0.1);
+            --ring: rgba(124, 58, 237, 0.3);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+        }
+
+
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background-color var(--transition-normal), border-color var(--transition-normal);
+        }
+
+        .header-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding-left: 1rem;
+        }
+
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: smooth;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-img.logo-dark {
+            display: block;
+        }
+
+        .logo-img.logo-light {
+            display: none;
+        }
+
+        [data-theme="light"] .logo-img.logo-dark {
+            display: none;
+        }
+
+        [data-theme="light"] .logo-img.logo-light {
+            display: block;
+        }
+
+        .header-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding-right: 1rem;
+        }
+
+
+        .tab-nav {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--bg-elevated);
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            transition: background-color var(--transition-normal), border-color var(--transition-normal);
+        }
+
+        .tab-button {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            border-radius: 0.375rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: inherit;
+            transition: color var(--transition-fast), background var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        .tab-button.active {
+            color: var(--text-primary);
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+        }
+
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .theme-toggle svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+
+        .theme-toggle .sun-icon {
+            display: none;
+        }
+
+        .theme-toggle .moon-icon {
+            display: block;
+        }
+
+        [data-theme="light"] .theme-toggle .sun-icon {
+            display: block;
+        }
+
+        [data-theme="light"] .theme-toggle .moon-icon {
+            display: none;
+        }
+
+
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+
+        .tab-content {
+            display: none;
+            animation: fadeIn var(--transition-slow) ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            padding: 6rem 1rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: calc(100vh - 56px);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--accent-muted);
+            border: 1px solid var(--accent);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            transition: background var(--transition-fast), color var(--transition-fast);
+        }
+
+        .hero-badge:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.035em;
+            line-height: 1.1;
+            margin-bottom: 1.75rem;
+            transition: color var(--transition-normal);
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover), #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            line-height: 1.65;
+            transition: color var(--transition-normal);
+        }
+
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8125rem 1.625rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 12px var(--ring);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--border-hover);
+        }
+
+        .btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+
+        .section {
+            margin: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.75rem;
+            transition: color var(--transition-normal);
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            transition: color var(--transition-normal);
+        }
+
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-icon {
+            width: 2.75rem;
+            height: 2.75rem;
+            background: var(--accent-muted);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            transition: background var(--transition-fast);
+        }
+
+        .card:hover .card-icon {
+            background: var(--accent);
+        }
+
+        .card-icon svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: var(--accent);
+            transition: stroke var(--transition-fast);
+        }
+
+        .card:hover .card-icon svg {
+            stroke: white;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: color var(--transition-normal);
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+            transition: color var(--transition-normal);
+        }
+
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 0 4px var(--accent-muted);
+        }
+
+        .step-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: color var(--transition-normal);
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            transition: color var(--transition-normal);
+        }
+
+
+        .testimonials-container {
+            display: flex;
+            gap: 1.25rem;
+            overflow-x: auto;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .testimonials-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            min-width: 320px;
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+            transition: border-color var(--transition-normal);
+        }
+
+        .testimonial-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .testimonial-quote {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            transition: color var(--transition-normal);
+        }
+
+        .testimonial-author {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 4rem 0;
+            transition: all var(--transition-normal);
+        }
+
+        .cta-section h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+            transition: color var(--transition-normal);
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: color var(--transition-normal);
+        }
+
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 220px);
+            min-height: 300px;
+            max-height: calc(100vh - 220px);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .messages {
+            flex: 1 1 0;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .messages::-webkit-scrollbar {
+            display: none;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            animation: messageSlide var(--transition-normal) ease-out;
+            overflow: visible;
+            word-wrap: break-word;
+            height: auto;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--accent);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 0.25rem;
+            transition: background-color var(--transition-normal), border-color var(--transition-normal);
+        }
+
+
+        .thinking {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            align-self: flex-start;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .thinking span {
+            width: 0.3rem;
+            height: 0.3rem;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+
+        .thinking span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .thinking span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .thinking span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes wave {
+
+            0%,
+            60%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            30% {
+                opacity: 1;
+                transform: translateY(-4px);
+            }
+        }
+
+
+        .input-container {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            transition: background-color var(--transition-normal), border-color var(--transition-normal);
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 0 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.8125rem;
+            font-family: inherit;
+            resize: none;
+            height: 40px;
+            line-height: 38px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--ring);
+        }
+
+        .message-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background var(--transition-fast);
+        }
+
+        .send-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .send-btn svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+
+        .about-header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.75rem;
+            transition: color var(--transition-normal);
+        }
+
+        .about-header p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            transition: color var(--transition-normal);
+        }
+
+        .about-section {
+            margin-bottom: 3rem;
+        }
+
+        .about-section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            transition: color var(--transition-normal);
+        }
+
+        .about-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            transition: color var(--transition-normal);
+        }
+
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .team-member {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: border-color var(--transition-normal);
+        }
+
+        .team-member:hover {
+            border-color: var(--border-hover);
+        }
+
+        .team-photo {
+            width: 5rem;
+            height: 5rem;
+            border-radius: 50%;
+            background: var(--accent-muted);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--transition-fast);
+        }
+
+        .team-member:hover .team-photo {
+            background: var(--accent);
+        }
+
+        .team-photo svg {
+            width: 2.5rem;
+            height: 2.5rem;
+            stroke: var(--accent);
+            transition: stroke var(--transition-fast);
+        }
+
+        .team-member:hover .team-photo svg {
+            stroke: white;
+        }
+
+        .team-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            transition: color var(--transition-normal);
+        }
+
+        .team-role {
+            color: var(--accent);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .team-bio {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+            transition: color var(--transition-normal);
+        }
+
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .value-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            transition: border-color var(--transition-normal);
+        }
+
+        .value-item:hover {
+            border-color: var(--accent);
+        }
+
+        .value-item strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .value-item p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0 !important;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+            transition: background-color var(--transition-normal), border-color var(--transition-normal);
+        }
+
+        .made-with {
+            display: inline-block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            transition: color var(--transition-fast);
+        }
+
+        .made-with:hover {
+            color: var(--accent);
+        }
+
+        .disclaimer {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+
+        @media (max-width: 768px) {
+            .header-container {
+                height: 48px;
+                flex-wrap: nowrap;
+                padding: 0 0.75rem;
+            }
+
+            .logo-section {
+                padding-left: 0;
+            }
+
+            .logo-img {
+                width: 28px;
+                height: 28px;
+            }
+
+            .header-center {
+                position: static;
+                transform: none;
+                flex: 1;
+                justify-content: center;
+                height: 100%;
+            }
+
+            .header-right {
+                padding-right: 0;
+            }
+
+            .tab-nav {
+                padding: 0.125rem;
+            }
+
+            .tab-button {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .theme-toggle {
+                width: 1.875rem;
+                height: 1.875rem;
+            }
+
+            .theme-toggle svg {
+                width: 0.875rem;
+                height: 0.875rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 1.5rem 0.5rem;
+                min-height: calc(100vh - 120px);
+            }
+
+            .hero-badge {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.7rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .hero h1 {
+                font-size: 1.375rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .hero p {
+                font-size: 0.8125rem;
+                margin-bottom: 1.25rem;
+                line-height: 1.5;
+            }
+
+            .btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.8125rem;
+            }
+
+            .section {
+                margin: 2.5rem 0;
+            }
+
+            .section-title {
+                font-size: 1.375rem;
+            }
+
+            .section-subtitle {
+                font-size: 0.875rem;
+            }
+
+            .cards-grid,
+            .steps-grid,
+            .team-grid,
+            .values-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .chat-container {
+                height: calc(100vh - 100px);
+                min-height: 300px;
+                max-height: calc(100vh - 100px);
+                border-radius: 0.5rem;
+            }
+
+            .testimonial-card {
+                min-width: 260px;
+                padding: 1.25rem;
+            }
+
+            .cta-section {
+                padding: 1.5rem 1rem;
+                margin: 2rem 0;
+            }
+
+            .cta-section h2 {
+                font-size: 1.25rem;
+            }
+
+            .cta-section p {
+                font-size: 0.875rem;
+            }
+
+            .about-header {
+                padding-top: 1rem;
+            }
+
+            .about-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .about-header p {
+                font-size: 0.875rem;
+            }
+
+            .about-section-title {
+                font-size: 1.25rem;
+            }
+
+            .about-section p {
+                font-size: 0.875rem;
+            }
+
+            footer {
+                padding: 1rem;
+            }
+
+            .made-with {
+                font-size: 0.8125rem;
+            }
+
+            .disclaimer {
+                font-size: 0.625rem;
+            }
+        }
+
+
+        @media (max-width: 480px) {
+
+
+            .header-container {
+                height: 48px;
+                padding: 0 0.75rem;
+            }
+
+            .logo-img {
+                width: 26px;
+                height: 26px;
+            }
+
+            .tab-nav {
+                padding: 0.1875rem;
+                gap: 0.125rem;
+            }
+
+            .tab-button {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.75rem;
+
+            }
+
+            .theme-toggle {
+                width: 2rem;
+                height: 2rem;
+            }
+
+            .theme-toggle svg {
+                width: 0.875rem;
+                height: 0.875rem;
+            }
+
+
+            main {
+                padding: 0.75rem;
+            }
+
+
+            .hero {
+                padding: 1.25rem 0.75rem;
+                min-height: auto;
+                margin-top: 0.5rem;
+            }
+
+            .hero-badge {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.6875rem;
+
+                margin-bottom: 0.75rem;
+            }
+
+            .hero-badge svg {
+                width: 11px;
+                height: 11px;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+
+                margin-bottom: 0.625rem;
+                line-height: 1.2;
+            }
+
+            .hero p {
+                font-size: 0.8125rem;
+
+                margin-bottom: 1.25rem;
+                padding: 0;
+                line-height: 1.5;
+            }
+
+
+            .btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.8125rem;
+
+                width: 100%;
+
+                max-width: none;
+            }
+
+            .btn svg {
+                width: 0.875rem;
+                height: 0.875rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.625rem;
+            }
+
+
+            .section {
+                margin: 2rem 0;
+            }
+
+            .section-header {
+                margin-bottom: 1.25rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .section-subtitle {
+                font-size: 0.8125rem;
+            }
+
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 0.875rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .card-icon {
+                width: 2.25rem;
+                height: 2.25rem;
+                margin-bottom: 0.625rem;
+            }
+
+            .card-icon svg {
+                width: 1.125rem;
+                height: 1.125rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .card-content {
+                font-size: 0.75rem;
+
+            }
+
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .step-number {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1.125rem;
+                margin-bottom: 0.625rem;
+            }
+
+            .step-title {
+                font-size: 0.9375rem;
+            }
+
+            .step-description {
+                font-size: 0.75rem;
+            }
+
+
+            .testimonial-card {
+                min-width: 220px;
+                padding: 1rem;
+            }
+
+            .testimonial-quote {
+                font-size: 0.8125rem;
+                margin-bottom: 0.875rem;
+            }
+
+            .testimonial-author {
+                font-size: 0.75rem;
+            }
+
+
+            .chat-container {
+                height: calc(100vh - 80px);
+
+                min-height: 280px;
+                max-height: calc(100vh - 80px);
+                border-radius: 0.375rem;
+                margin-bottom: 0;
+            }
+
+            .messages {
+                padding: 0.875rem;
+                gap: 0.625rem;
+            }
+
+            .message {
+                max-width: 88%;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+
+            }
+
+            .input-container {
+                padding: 0.625rem;
+                gap: 0.5rem;
+            }
+
+            .message-input {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8125rem;
+                height: 36px;
+            }
+
+            .send-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .send-btn svg {
+                width: 1rem;
+                height: 1rem;
+            }
+
+
+            .cta-section {
+                padding: 1.25rem 0.875rem;
+                margin: 1.5rem 0;
+                border-radius: 0.625rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.125rem;
+                margin-bottom: 0.625rem;
+            }
+
+            .cta-section p {
+                font-size: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+
+            .about-header {
+                padding-top: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .about-header h1 {
+                font-size: 1.375rem;
+            }
+
+            .about-header p {
+                font-size: 0.75rem;
+            }
+
+            .about-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .about-section-title {
+                font-size: 1rem;
+                padding-bottom: 0.5rem;
+                margin-bottom: 0.625rem;
+            }
+
+            .about-section p {
+                font-size: 0.75rem;
+                line-height: 1.6;
+                margin-bottom: 0.625rem;
+            }
+
+            .team-grid {
+                gap: 0.875rem;
+                margin-top: 1rem;
+            }
+
+            .team-member {
+                padding: 1rem;
+            }
+
+            .team-photo {
+                width: 3.5rem;
+                height: 3.5rem;
+                margin-bottom: 0.625rem;
+            }
+
+            .team-photo svg {
+                width: 1.75rem;
+                height: 1.75rem;
+            }
+
+            .team-name {
+                font-size: 1rem;
+                margin-bottom: 0.125rem;
+            }
+
+            .team-role {
+                font-size: 0.75rem;
+            }
+
+            .team-bio {
+                font-size: 0.6875rem;
+            }
+
+            .values-grid {
+                gap: 0.75rem;
+            }
+
+            .value-item {
+                padding: 0.875rem;
+            }
+
+            .value-item strong {
+                font-size: 0.9375rem;
+            }
+
+            .value-item p {
+                font-size: 0.75rem;
+            }
+
+
+            footer {
+                padding: 0.75rem;
+            }
+
+            .made-with {
+                font-size: 0.6875rem;
+            }
+
+            .disclaimer {
+                font-size: 0.5625rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="/static/logo.svg" alt="Logo" class="logo-img logo-dark">
+                <img src="/static/logo-light.svg" alt="Logo" class="logo-img logo-light">
+            </div>
+            <div class="header-center">
+                <nav class="tab-nav">
+                    <button class="tab-button active" data-tab="home">Home</button>
+                    <button class="tab-button" data-tab="chat">Chat</button>
+                    <button class="tab-button" data-tab="about">About</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <div id="home-content" class="tab-content active">
+            <section class="hero">
+                <span class="hero-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    AI-Powered Assistance
+                </span>
+                <h1>Manage Your Diabetes<br><span class="gradient-text">Smarter With AI</span></h1>
+                <p>Get personalized guidance for glucose management, diet planning, and lifestyle adjustments. Instant,
+                    AI-powered advice tailored to your needs.</p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" data-tab-target="chat">
+                        <img src="/static/chat-bubbles.png" alt="Chat"
+                            style="width: 1.125rem; height: 1.125rem; filter: brightness(0) invert(1);">
+                        Start Chatting
+                    </button>
+                    <button class="btn btn-secondary" data-tab-target="about">Learn More</button>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">What We Offer</h2>
+                    <p class="section-subtitle">Comprehensive tools to help you manage diabetes effectively</p>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                <line x1="6" y1="1" x2="6" y2="4"></line>
+                                <line x1="10" y1="1" x2="10" y2="4"></line>
+                                <line x1="14" y1="1" x2="14" y2="4"></line>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Glucose Management</h3>
+                        <p class="card-content">Get personalized advice on blood glucose monitoring, insulin management,
+                            and understanding your readings.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Diet Planning</h3>
+                        <p class="card-content">Learn about carbohydrate counting, meal planning, and food choices that
+                            help maintain healthy blood sugar levels.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Physical Activity</h3>
+                        <p class="card-content">Discover how exercise affects your glucose levels and get safe,
+                            effective activity recommendations.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">Health Monitoring</h3>
+                        <p class="card-content">Get insights on tracking health metrics, understanding lab results, and
+                            recognizing warning signs.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle">Simple steps to get started</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Start a Chat</h3>
+                        <p class="step-description">Open the chat interface - no account or login required.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Ask Questions</h3>
+                        <p class="step-description">Inquire about any diabetes-related topic that concerns you.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Get Advice</h3>
+                        <p class="step-description">Receive AI-generated guidance based on current medical knowledge.
+                        </p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">Take Control</h3>
+                        <p class="step-description">Apply insights to better manage your condition daily.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">What Users Say</h2>
+                    <p class="section-subtitle">Real experiences from people managing diabetes</p>
+                </div>
+                <div class="testimonials-container">
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">This app has transformed how I manage my Type 2 diabetes. The meal
+                            planning advice is practical and has helped me maintain steadier levels.</p>
+                        <p class="testimonial-author">Sarah K., Type 2 Diabetes</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">As a parent of a child with Type 1, this tool has been incredibly
+                            helpful for answering those middle-of-the-night questions.</p>
+                        <p class="testimonial-author">Mark T., Parent of T1D Child</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-quote">The exercise recommendations are tailored perfectly to how my body
+                            responds. It's like having a diabetes educator in my pocket.</p>
+                        <p class="testimonial-author">Lisa M., Type 1 Diabetes</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2>Ready to Take Control?</h2>
+                <p>Start chatting today and discover how AI can help you manage your condition better.</p>
+                <button class="btn btn-primary" data-tab-target="chat">Get Started</button>
+            </section>
+        </div>
+
+
+        <div id="chat-content" class="tab-content">
+            <div class="chat-container">
+                <div class="messages" id="chat-messages">
+                    <div class="message bot-message">
+                        Hello! I'm your AI assistant for diabetes information and management. How can I help you today?
+                    </div>
+                </div>
+                <div class="input-container">
+                    <textarea class="message-input" id="user-input"
+                        placeholder="Ask about diabetes management, diet, or health..." rows="1"></textarea>
+                    <button class="send-btn" id="send-button">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="about-content" class="tab-content">
+            <section class="about-header">
+                <h1>About <span class="gradient-text">Us</span></h1>
+                <p>Learn about our mission to transform diabetes management through accessible AI assistance.</p>
+            </section>
+
+            <section class="about-section">
+                <h2 class="about-section-title">Our Mission</h2>
+                <p>We were created with a simple yet powerful mission: to make diabetes management knowledge accessible
+                    to everyone. We believe that personalized guidance shouldn't be limited by geography, financial
+                    resources, or healthcare access.</p>
+                <p>By leveraging advanced artificial intelligence, we've built a platform that provides instant,
+                    evidence-based advice tailored to individual needs. Our goal is to empower people living with
+                    diabetes to make informed decisions about their health every day.</p>
+            </section>
+
+            <section class="about-section">
+                <h2 class="about-section-title">Our Technology</h2>
+                <p>This platform is powered by a custom large language model (LLM) that has been specifically trained on
+                    diabetes management literature, medical journals, nutritional data, and exercise science.</p>
+                <p>Our system is continuously updated with the latest research and guidelines. While we strive for
+                    accuracy, this is designed as an educational tool and complement to professional medical care, not a
+                    replacement for it.</p>
+            </section>
+
+            <section class="about-section">
+                <h2 class="about-section-title">Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-photo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h3 class="team-name">Subrato Mandal</h3>
+                        <p class="team-role">Founder</p>
+                        <p class="team-bio">Passionate about leveraging AI to make healthcare more accessible to
+                            everyone.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section">
+                <h2 class="about-section-title">Our Values</h2>
+                <div class="values-grid">
+                    <div class="value-item">
+                        <strong>Accessibility</strong>
+                        <p>Quality diabetes information available to everyone, regardless of location or resources.</p>
+                    </div>
+                    <div class="value-item">
+                        <strong>Accuracy</strong>
+                        <p>Evidence-based information aligned with current medical standards and best practices.</p>
+                    </div>
+                    <div class="value-item">
+                        <strong>Empowerment</strong>
+                        <p>Helping people gain confidence in making daily health decisions.</p>
+                    </div>
+                    <div class="value-item">
+                        <strong>Privacy</strong>
+                        <p>We respect your privacy and do not store personal health information.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2>Experience It Today</h2>
+                <p>Have questions about managing your diabetes? Try our AI assistant and get personalized guidance.</p>
+                <button class="btn btn-primary" data-tab-target="chat">Start Chatting Now</button>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <a href="https://github.com/subratomandal/diabetes" target="_blank" rel="noopener noreferrer"
+            class="made-with">Made with ♡ by Subrato</a>
+        <p class="disclaimer">This provides informational content only and is not a substitute for professional medical
+            advice.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                html.setAttribute('data-theme', savedTheme);
+            } else if (!systemPrefersDark) {
+                html.setAttribute('data-theme', 'light');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+                if (newTheme === 'dark') {
+                    html.removeAttribute('data-theme');
+                } else {
+                    html.setAttribute('data-theme', newTheme);
+                }
+
+                localStorage.setItem('theme', newTheme);
+            });
+
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const ctaButtons = document.querySelectorAll('.btn[data-tab-target]');
+
+            function switchTab(targetTabId) {
+                tabButtons.forEach(button => {
+                    button.classList.toggle('active', button.getAttribute('data-tab') === targetTabId);
+                });
+
+                tabContents.forEach(content => {
+                    content.classList.toggle('active', content.id === targetTabId + '-content');
+                });
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => switchTab(button.getAttribute('data-tab')));
+            });
+
+            ctaButtons.forEach(button => {
+                button.addEventListener('click', () => switchTab(button.getAttribute('data-tab-target')));
+            });
+
+
+            const messagesContainer = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+
+            userInput.addEventListener('input', () => {
+                userInput.style.height = 'auto';
+                userInput.style.height = Math.min(userInput.scrollHeight, 100) + 'px';
+            });
+
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            sendButton.addEventListener('click', sendMessage);
+
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, 'user');
+                userInput.value = '';
+                userInput.style.height = '40px';
+
+                showThinkingIndicator();
+
+                fetch('/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: message })
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(data => {
+                        removeThinkingIndicator();
+                        addMessage(data?.response || "Sorry, I received an unexpected response.", 'bot');
+                    })
+                    .catch(error => {
+                        removeThinkingIndicator();
+                        addMessage(`Sorry, I'm having trouble connecting. ${error.message}`, 'bot');
+                        console.error('Error:', error);
+                    });
+            }
+
+            function addMessage(content, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                messageDiv.textContent = content;
+                messagesContainer.appendChild(messageDiv);
+                scrollToBottom();
+            }
+
+            function showThinkingIndicator() {
+                if (messagesContainer.querySelector('.thinking')) return;
+                const thinkingDiv = document.createElement('div');
+                thinkingDiv.className = 'thinking';
+                thinkingDiv.innerHTML = '<span></span><span></span><span></span>';
+                messagesContainer.appendChild(thinkingDiv);
+                scrollToBottom();
+            }
+
+            function removeThinkingIndicator() {
+                const thinkingDiv = messagesContainer.querySelector('.thinking');
+                if (thinkingDiv) thinkingDiv.remove();
+            }
+
+            function scrollToBottom() {
+                const lastMessage = messagesContainer.lastElementChild;
+                if (lastMessage) {
+                    lastMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
